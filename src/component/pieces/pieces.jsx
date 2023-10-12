@@ -1,9 +1,14 @@
-import React, { useState, useRef } from "react";
+import React, { useRef } from "react";
 import Piece from "./piece";
 
-import { createPosition, copyPosition } from "../../helper/helper";
+import { copyPosition } from "../../helper/helper";
+import { useAppContext } from "../../context/Provider";
+
+import { makeNewMove } from "../../reducer/move";
 function pices() {
-	const [currentPosition, setState] = useState(createPosition());
+	const { appState, dispatch } = useAppContext();
+
+	const currentPosition = appState.position[appState.position.length - 1];
 
 	const picesRef = useRef();
 
@@ -24,14 +29,15 @@ function pices() {
 	const handelDrop = (e) => {
 		const newPosition = copyPosition(currentPosition);
 		const { x, y } = calculateCoords(e);
-		console.log(x, "x===>", y, "y====>");
+
 		const [p, rank, file] = e.dataTransfer.getData("text").split(",");
-		console.log("p=====>", p, "rank====>", rank, "file====>", file);
+
 		newPosition[rank][file] = " ";
 
 		newPosition[x][y] = p;
 
-		setState(newPosition);
+		dispatch(makeNewMove({ newPosition }));
+		// setState(newPosition);
 	};
 
 	/**
@@ -40,25 +46,29 @@ function pices() {
 	const handeldargOver = (e) => {
 		e.preventDefault();
 	};
+
+	console.log(appState, "app State ");
 	return (
-		<div
-			className='pieces'
-			ref={picesRef}
-			onDrop={handelDrop}
-			onDragOver={handeldargOver}>
-			{currentPosition.map((r, rank) =>
-				r.map((f, file) =>
-					currentPosition[rank][file] ? (
-						<Piece
-							key={rank + "-" + file}
-							rank={rank}
-							file={file}
-							piece={currentPosition[rank][file]}
-						/>
-					) : null
-				)
-			)}
-		</div>
+		<>
+			<div
+				className='pieces'
+				ref={picesRef}
+				onDrop={handelDrop}
+				onDragOver={handeldargOver}>
+				{currentPosition.map((r, rank) =>
+					r.map((f, file) =>
+						currentPosition[rank][file] ? (
+							<Piece
+								key={rank + "-" + file}
+								rank={rank}
+								file={file}
+								piece={currentPosition[rank][file]}
+							/>
+						) : null
+					)
+				)}
+			</div>
+		</>
 	);
 }
 
