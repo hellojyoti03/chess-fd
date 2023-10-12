@@ -47,11 +47,10 @@ function pices() {
 		e.preventDefault();
 	};
 
-	console.log(appState, "app State ");
 	return (
 		<>
 			<div
-				className='pieces'
+				className="pieces"
 				ref={picesRef}
 				onDrop={handelDrop}
 				onDragOver={handeldargOver}>
