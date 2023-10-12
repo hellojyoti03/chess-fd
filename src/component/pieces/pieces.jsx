@@ -10,25 +10,24 @@ function pices() {
 	/**
 	 * get coordinate of parent virtual board
 	 */
-	const getCordinate = (e) => {
-		const { width, left, top } = picesRef.current.getBoundingClientRect();
+	const calculateCoords = (e) => {
+		const { top, left, width } = picesRef.current.getBoundingClientRect();
 		const size = width / 8;
+		const y = Math.floor((e.clientX - left) / size);
+		const x = 7 - Math.floor((e.clientY - top) / size);
 
-		const x = Math.floor((e.clientX - left) / size);
-		const y = 7 - Math.floor((e.clientY - top) / size);
 		return { x, y };
 	};
-
 	/**
 	 * onDrop
 	 */
 	const handelDrop = (e) => {
 		const newPosition = copyPosition(currentPosition);
-		const { x, y } = getCordinate(e);
+		const { x, y } = calculateCoords(e);
 		console.log(x, "x===>", y, "y====>");
 		const [p, rank, file] = e.dataTransfer.getData("text").split(",");
 		console.log("p=====>", p, "rank====>", rank, "file====>", file);
-		newPosition[rank][file] = "";
+		newPosition[rank][file] = " ";
 
 		newPosition[x][y] = p;
 
