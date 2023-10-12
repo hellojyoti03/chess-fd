@@ -1,7 +1,7 @@
-import Board from "./component/board";
+import Board from "./component/board/board";
 function App() {
 	return (
-		<div className="app">
+		<div className='app'>
 			<Board />
 		</div>
 	);

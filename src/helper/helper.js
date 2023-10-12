@@ -1,30 +1,28 @@
 let createPosition = () => {
-	const position = Array(8)
-		.fill("")
-		.map((el) => Array(8).fill(""));
-	console.log(position, "array");
+	const position = new Array(8).fill("").map((x) => new Array(8).fill(""));
+
 	for (let i = 0; i < 8; i++) {
-		position[i][1] = "wb";
-		position[i][6] = "bb";
+		position[6][i] = "bp";
+		position[1][i] = "wp";
 	}
 
 	position[0][0] = "wr";
-	position[7][0] = "wr";
-	position[1][0] = "wn";
-	position[6][0] = "wn";
-	position[2][0] = "wb";
-	position[5][0] = "wb";
-	position[3][0] = "wq";
-	position[4][0] = "wk";
+	position[0][1] = "wn";
+	position[0][2] = "wb";
+	position[0][3] = "wq";
+	position[0][4] = "wk";
+	position[0][5] = "wb";
+	position[0][6] = "wn";
+	position[0][7] = "wr";
 
-	position[0][7] = "br";
+	position[7][0] = "br";
+	position[7][1] = "bn";
+	position[7][2] = "bb";
+	position[7][3] = "bq";
+	position[7][4] = "bk";
+	position[7][5] = "bb";
+	position[7][6] = "bn";
 	position[7][7] = "br";
-	position[1][7] = "bn";
-	position[6][7] = "bn";
-	position[2][7] = "bb";
-	position[5][7] = "bb";
-	position[3][7] = "bq";
-	position[4][7] = "bk";
 
 	return position;
 };
@@ -42,4 +40,10 @@ let copyPosition = (position) => {
 
 	return copyPosition;
 };
-export { createPosition, copyPosition };
+
+let AsciiToChar = (ascii) => {
+	let char = String.fromCharCode(96 + ascii);
+
+	return char;
+};
+export { createPosition, copyPosition, AsciiToChar };

@@ -1,9 +1,10 @@
 import React from "react";
+import { AsciiToChar } from "../../../helper/helper";
 function file(props) {
 	return (
 		<div className='file'>
 			{props.file.map((el, i) => (
-				<span key={i}>{String.fromCharCode(96 + el)}</span>
+				<span key={i}>{AsciiToChar(el)}</span>
 			))}
 		</div>
 	);
