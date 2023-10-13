@@ -1,9 +1,8 @@
 import React from "react";
 import { useAppContext } from "../../context/Provider";
 function CandidateMove() {
-	const { appState, dispatch } = useAppContext();
+	const { appState } = useAppContext();
 
-	const currentPosition = appState.position[appState.position.length - 1];
 	// console.log(currentPosition, "current position");
 	return (
 		<div className='candidate_move'>

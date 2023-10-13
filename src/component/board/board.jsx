@@ -7,6 +7,7 @@ import { useAppContext } from "../../context/Provider";
 function Board() {
 	const { appState } = useAppContext();
 
+	console.log(appState, "app state history");
 	const currentPosition = appState.position[appState.position.length - 1];
 
 	/**

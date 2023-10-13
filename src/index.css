@@ -360,11 +360,12 @@ html::before {
 	top: 0;
 }
 .candidate_move {
+	width: 250px;
 	background-color: green;
 	display: flex;
 	position: absolute;
-	top: 0;
-	left: 0;
+	top: 20px;
+	left: 40px;
 }
 table {
 	font-family: arial, sans-serif;
@@ -375,8 +376,9 @@ table {
 td,
 th {
 	border: 1px solid #dddddd;
-	text-align: left;
+	text-align: center;
 	padding: 8px;
+	font-size: 30px;
 }
 
 tr:nth-child(even) {
@@ -385,6 +387,6 @@ tr:nth-child(even) {
 .own__porn {
 	background-color: #feec48;
 }
-.bg-salmon{
-	background-color: salmon
+.bg-salmon {
+	background-color: salmon;
 }

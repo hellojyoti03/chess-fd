@@ -31,6 +31,7 @@ function pices() {
 
 		const [p, rank, file] = e.dataTransfer.getData("text").split(",");
 
+		console.log(appState.candidateMove, "candidate move");
 		if (appState.candidateMove.find((m) => m[0] === x && m[1] === y)) {
 			newPosition[Number(rank)][Number(file)] = "";
 
