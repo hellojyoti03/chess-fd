@@ -6,4 +6,11 @@ let makeNewMove = ({ newPosition }) => {
 	};
 };
 
-export { makeNewMove };
+let makeCandidateMoves = ({ candicateMove }) => {
+	return {
+		type: actionTypes.CANDIDATE_MOVE,
+		payload: { candicateMove },
+	};
+};
+
+export { makeNewMove, makeCandidateMoves };
