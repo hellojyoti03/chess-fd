@@ -16,6 +16,24 @@ let reducer = (state, action) => {
 				candidateMove: action.payload.candicateMove,
 			};
 		}
+		case actionTypes.CLEAR_CANDIDATE_MOVES: {
+			return {
+				...state,
+				candidateMove: action.payload,
+			};
+		}
+		case actionTypes.CLEAR_PORN: {
+			return {
+				...state,
+				porn: action.payload,
+			};
+		}
+		case actionTypes.NEW_MOVE_CLICK_PORN: {
+			return {
+				...state,
+				porn: action.payload.porn,
+			};
+		}
 		default: {
 			state;
 			break;

@@ -4,10 +4,9 @@ import Piece from "./piece";
 import { copyPosition } from "../../helper/helper";
 import { useAppContext } from "../../context/Provider";
 
-import { makeNewMove } from "../../reducer/move";
+import { makeNewMove, clearCandidates, clearPorn } from "../../reducer/move";
 function pices() {
 	const { appState, dispatch } = useAppContext();
-
 	const currentPosition = appState.position[appState.position.length - 1];
 
 	const picesRef = useRef();
@@ -24,7 +23,7 @@ function pices() {
 		return { x, y };
 	};
 	/**
-	 * onDrop
+	 * drop event handel
 	 */
 	const handelDrop = (e) => {
 		const newPosition = copyPosition(currentPosition);
@@ -32,26 +31,51 @@ function pices() {
 
 		const [p, rank, file] = e.dataTransfer.getData("text").split(",");
 
-		newPosition[rank][file] = " ";
+		if (appState.candidateMove.find((m) => m[0] === x && m[1] === y)) {
+			newPosition[Number(rank)][Number(file)] = "";
 
-		newPosition[x][y] = p;
+			newPosition[x][y] = p;
 
-		dispatch(makeNewMove({ newPosition }));
-		// setState(newPosition);
+			dispatch(makeNewMove({ newPosition }));
+		}
+		dispatch(clearCandidates());
+		dispatch(clearPorn());
 	};
 
 	/**
-	 * onDargOver
+	 * darg over event handel
 	 */
 	const handeldargOver = (e) => {
 		e.preventDefault();
 	};
 
+	/**
+	 * drop click event handel
+	 */
+	const handelDropClick = (e) => {
+		if (appState.porn) {
+			const newPosition = copyPosition(currentPosition);
+			const { x, y } = calculateCoords(e);
+
+			const [p, rank, file] = appState.porn.split(",");
+
+			if (appState.candidateMove.find((m) => m[0] === x && m[1] === y)) {
+				newPosition[Number(rank)][Number(file)] = "";
+
+				newPosition[x][y] = p;
+
+				dispatch(makeNewMove({ newPosition }));
+			}
+			dispatch(clearCandidates());
+			dispatch(clearPorn());
+		}
+	};
 	return (
 		<>
 			<div
-				className="pieces"
+				className='pieces'
 				ref={picesRef}
+				onClick={handelDropClick}
 				onDrop={handelDrop}
 				onDragOver={handeldargOver}>
 				{currentPosition.map((r, rank) =>

@@ -34,10 +34,16 @@ html::before {
 }
 .app {
 	height: 100vh;
+}
+.container {
+	width: 100%;
+	height: 100%;
+	position: relative;
 	overflow: hidden;
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	background-color: red;
 }
 .piece.bk {
 	background-image: url("../src/assets/bk.png");
@@ -279,9 +285,7 @@ html::before {
 .boards {
 	position: relative;
 	display: grid;
-	grid-template-columns: calc(0.25 * var(--tile-size)) calc(
-			8 * var(--tile-size)
-		);
+	grid-template-columns: calc(0.25 * var(--tile-size)) calc(8 * var(--tile-size));
 	grid-template-rows: calc(8 * var(--tile-size)) calc(0.25 * var(--tile-size));
 }
 .tiles {
@@ -327,27 +331,60 @@ html::before {
 	background-size: 100%;
 	background-color: transparent;
 	position: absolute;
+	cursor: pointer;
 }
-.highlight {
+.highlight::after {
 	display: block;
 
 	position: absolute;
-
-	width: calc(0.5 * var(--tile-size));
-	height: calc(0.5 * var(--tile-size));
-	background-color: var(--high-light-tiles);
+	content: "";
+	/* z-index: 1; */
+	width: calc(0.5 * 80px);
+	height: calc(0.5 * 80px);
+	background-color: green;
 	border-radius: 50%;
 	left: 25%;
 	top: 25%;
 }
+
 .attacking::after {
 	display: block;
-	/* position: absolute; */
-	/* content: ""; */
-	border: 6px solid var(--highlight);
-	width: calc(var(--tile-size) - 12px);
-	height: calc(var(--tile-size) - 12px);
+	position: absolute;
+	content: "";
+	/* z-index: 1; */
+	border: 6px solid red;
+	width: calc(80px - 12px);
+	height: calc(80px - 12px);
 	border-radius: 50%;
-	/* left: 0;
-	top: 0; */
+	left: 0;
+	top: 0;
+}
+.candidate_move {
+	background-color: green;
+	display: flex;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+table {
+	font-family: arial, sans-serif;
+	border-collapse: collapse;
+	width: 100%;
+}
+
+td,
+th {
+	border: 1px solid #dddddd;
+	text-align: left;
+	padding: 8px;
+}
+
+tr:nth-child(even) {
+	background-color: #dddddd;
+}
+.own__porn {
+	background-color: #feec48;
+}
+.bg-salmon{
+	background-color: salmon
 }

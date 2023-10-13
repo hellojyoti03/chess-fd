@@ -1,16 +1,16 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 import { useAppContext } from "../../context/Provider";
 
 import { arbitar } from "../../arbitar/arbitar";
 
-import { makeCandidateMoves } from "../../reducer/move";
+import { makeCandidateMoves, makeNewClickMove } from "../../reducer/move";
 function piece({ rank, file, piece }) {
 	const { appState, dispatch } = useAppContext();
 
 	const currentPosition = appState.position[appState.position.length - 1];
 
 	/**
-	 * on darg start
+	 *  darg event handel
 	 */
 	const handelDragStart = (e) => {
 		e.dataTransfer.effectAllowed = "move";
@@ -21,13 +21,12 @@ function piece({ rank, file, piece }) {
 
 		// take my turn ...
 		if (appState.turn === piece[0]) {
-			const candicateMove = arbitar.getRookMove({
+			const candicateMove = arbitar.getRegularMove({
 				position: currentPosition,
 				rank,
 				file,
 				piece,
 			});
-			console.log(candicateMove, "canditate move");
 
 			dispatch(makeCandidateMoves({ candicateMove }));
 		}
@@ -37,12 +36,32 @@ function piece({ rank, file, piece }) {
 		e.target.style.display = "block";
 	};
 
+	/**
+	 * click event handel
+	 */
+	const handelClick = (e) => {
+		// check my turn
+		if (appState.turn === piece[0]) {
+			const candicateMove = arbitar.getRegularMove({
+				position: currentPosition,
+				rank,
+				file,
+				piece,
+			});
+
+			dispatch(makeNewClickMove({ porn: `${piece},${rank},${file}` }));
+			dispatch(makeCandidateMoves({ candicateMove }));
+		}
+	};
+
+	//! remove current div class toogle
 	return (
 		<div
 			className={`piece ${piece} p-${file}${rank}`}
 			draggable={true}
 			onDragStart={handelDragStart}
-			onDragEnd={handelDargEnd}></div>
+			onDragEnd={handelDargEnd}
+			onClick={handelClick}></div>
 	);
 }
 
