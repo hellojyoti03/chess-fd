@@ -1,8 +1,8 @@
 import { createPosition } from "../helper/helper";
 
 let gameStatus = {
-	stalemet: "game draw due to stalemet",
-	insufficiant: "game draw due to in sufficiant matarial",
+	stalemet: "game draw due to stalemet", // no check but no move
+	insufficiant: "game draw due to insufficient mating material.",
 	ongoing: "ongoing",
 	draw: "draw",
 	promoting: "promoting",

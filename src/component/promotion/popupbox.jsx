@@ -8,11 +8,9 @@ import { gameStatus } from "../../reducer/constant";
 function popupbox() {
 	const { appState, dispatch } = useAppContext();
 
-	console.log("Open Poup Box");
-
 	if (appState.status === gameStatus.promoting) {
 		return (
-			<div className="popup">
+			<div className='popup'>
 				<Promoption />
 			</div>
 		);
@@ -23,7 +21,7 @@ function popupbox() {
 	) {
 		console.log("call dedd posoososo");
 		return (
-			<div className="popup">
+			<div className='popup'>
 				<Satalement />
 			</div>
 		);
@@ -34,7 +32,7 @@ function popupbox() {
 		appState.status === gameStatus.black
 	) {
 		return (
-			<div className="popup">
+			<div className='popup'>
 				<Winner />
 			</div>
 		);

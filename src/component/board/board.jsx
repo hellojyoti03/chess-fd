@@ -11,7 +11,6 @@ import { getKingPosition } from "../../arbitar/getMoves";
 function Board() {
 	const { appState } = useAppContext();
 
-	console.log(appState, "app state =====>");
 	const currentPosition = appState.position[appState.position.length - 1];
 
 	/**
@@ -62,11 +61,11 @@ function Board() {
 		.map((x, i) => i + 1);
 
 	return (
-		<div className="container">
+		<div className='container'>
 			<CandidateMove />
-			<div className="boards">
+			<div className='boards'>
 				<Rank rank={ranks} />
-				<div className="tiles">
+				<div className='tiles'>
 					{ranks.map((rank, i) =>
 						files.map((file, j) => (
 							<div
