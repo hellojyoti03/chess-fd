@@ -285,9 +285,7 @@ html::before {
 .boards {
 	position: relative;
 	display: grid;
-	grid-template-columns: calc(0.25 * var(--tile-size)) calc(
-			8 * var(--tile-size)
-		);
+	grid-template-columns: calc(0.25 * var(--tile-size)) calc(8 * var(--tile-size));
 	grid-template-rows: calc(8 * var(--tile-size)) calc(0.25 * var(--tile-size));
 }
 .tiles {

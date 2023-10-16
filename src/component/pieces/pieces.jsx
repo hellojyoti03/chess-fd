@@ -63,6 +63,7 @@ function pices() {
 	const handelDrop = (e) => {
 		const { x, y } = calculateCoords(e);
 
+		console.log(x, "x====>", y, "y===>");
 		const [piece, rank, file] = e.dataTransfer.getData("text").split(",");
 
 		if (appState.candidateMove.find((m) => m[0] === x && m[1] === y)) {
@@ -113,6 +114,7 @@ function pices() {
 		if (appState.porn) {
 			const { x, y } = calculateCoords(e);
 
+			console.log(x, "x====>", y, "y===>");
 			const [piece, rank, file] = appState.porn.split(",");
 
 			if (appState.candidateMove.find((m) => m[0] === x && m[1] === y)) {
@@ -152,6 +154,12 @@ function pices() {
 			dispatch(clearPorn());
 		}
 	};
+	console.log(
+		currentPosition.map((row) => row.reverse()).reverse(),
+		currentPosition[0][0],
+		"current position reverse "
+	);
+
 	return (
 		<>
 			<div
@@ -160,6 +168,18 @@ function pices() {
 				onClick={handelDropClick}
 				onDrop={handelDrop}
 				onDragOver={handeldargOver}>
+				{/* {currentPosition.map((r, rank) =>
+					r.map((f, file) =>
+						currentPosition[rank][file] ? (
+							<Piece
+								key={rank + "-" + file}
+								rank={rank}
+								file={file}
+								piece={currentPosition[rank][file]}
+							/>
+						) : null
+					)
+				)} */}
 				{currentPosition.map((r, rank) =>
 					r.map((f, file) =>
 						currentPosition[rank][file] ? (

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Rank from "./bitter/rank";
 import File from "./bitter/file";
 import Pieces from "../pieces/pieces";
@@ -11,8 +11,17 @@ import { getKingPosition } from "../../arbitar/getMoves";
 function Board() {
 	const { appState } = useAppContext();
 
+	const ranks = Array(8)
+		.fill()
+		.map((x, i) => 8 - i);
+	const files = Array(8)
+		.fill()
+		.map((x, i) => i + 1);
+	const [board, setBoard] = useState({ ranks: ranks, files: files });
+
 	const currentPosition = appState.position[appState.position.length - 1];
 
+	console.log(currentPosition, "current position");
 	/**
 	 * check every time king check or not
 	 *
@@ -51,14 +60,13 @@ function Board() {
 	};
 
 	/**
+	 * rotate the board
+	 */
+
+	useEffect(() => {});
+	/**
 	 * rank and file 2d array
 	 */
-	const ranks = Array(8)
-		.fill()
-		.map((x, i) => 8 - i);
-	const files = Array(8)
-		.fill()
-		.map((x, i) => i + 1);
 
 	return (
 		<div className='container'>
@@ -66,13 +74,9 @@ function Board() {
 			<div className='boards'>
 				<Rank rank={ranks} />
 				<div className='tiles'>
-					{ranks.map((rank, i) =>
-						files.map((file, j) => (
-							<div
-								key={file + "" + rank}
-								i={i}
-								j={j}
-								className={`${getClassName(7 - i, j)}`}></div>
+					{currentPosition.map((r, rank) =>
+						r.map((f, file) => (
+							<div key={file + "" + rank} className={`${getClassName(7 - rank, file)}`}></div>
 						))
 					)}
 				</div>
