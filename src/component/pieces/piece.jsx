@@ -57,7 +57,7 @@ function piece({ rank, file, piece }) {
 				piece,
 			});
 
-			dispatch(makeNewClickMove({ porn: `${piece},${rank},${file}` }));
+			dispatch(makeNewClickMove({ pawn: `${piece},${rank},${file}` }));
 			dispatch(makeCandidateMoves({ candicateMove }));
 		}
 	};

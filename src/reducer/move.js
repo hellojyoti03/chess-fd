@@ -6,11 +6,11 @@ let makeNewMove = ({ newPosition }) => {
 	};
 };
 
-let makeNewClickMove = ({ porn }) => {
+let makeNewClickMove = ({ pawn }) => {
 	return {
-		type: actionTypes.NEW_MOVE_CLICK_PORN,
+		type: actionTypes.NEW_MOVE_CLICK_PAWN,
 		payload: {
-			porn,
+			pawn,
 		},
 	};
 };
@@ -27,9 +27,9 @@ let clearCandidates = () => {
 	};
 };
 
-let clearPorn = () => {
+let clearPawn = () => {
 	return {
-		type: actionTypes.CLEAR_PORN,
+		type: actionTypes.CLEAR_PAWN,
 		payload: "",
 	};
 };
@@ -49,7 +49,6 @@ let closePromotionBox = () => {
 };
 
 let updateCastlingMove = (direction) => {
-	console.log(direction, "direction");
 	return {
 		type: actionTypes.CHECK_CASTEL,
 		payload: direction,
@@ -86,7 +85,7 @@ export {
 	makeCandidateMoves,
 	clearCandidates,
 	makeNewClickMove,
-	clearPorn,
+	clearPawn,
 	openPromotionBox,
 	closePromotionBox,
 	updateCastlingMove,

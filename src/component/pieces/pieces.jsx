@@ -7,7 +7,7 @@ import { useAppContext } from "../../context/Provider";
 import {
 	makeNewMove,
 	clearCandidates,
-	clearPorn,
+	clearPawn,
 	openPromotionBox,
 	updateCastlingMove,
 	dectactStalemet,
@@ -97,7 +97,7 @@ function pices() {
 			}
 		}
 		dispatch(clearCandidates());
-		dispatch(clearPorn());
+		dispatch(clearPawn());
 	};
 
 	/**
@@ -111,11 +111,11 @@ function pices() {
 	 * drop click event handel
 	 */
 	const handelDropClick = (e) => {
-		if (appState.porn) {
+		if (appState.pawn) {
 			const { x, y } = calculateCoords(e);
 
 			console.log(x, "x====>", y, "y===>");
-			const [piece, rank, file] = appState.porn.split(",");
+			const [piece, rank, file] = appState.pawn.split(",");
 
 			if (appState.candidateMove.find((m) => m[0] === x && m[1] === y)) {
 				// Em pasant move when current poition empty
@@ -151,7 +151,7 @@ function pices() {
 				}
 			}
 			dispatch(clearCandidates());
-			dispatch(clearPorn());
+			dispatch(clearPawn());
 		}
 	};
 	console.log(

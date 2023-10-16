@@ -24,16 +24,16 @@ let reducer = (state, action) => {
 				candidateMove: action.payload,
 			};
 		}
-		case actionTypes.CLEAR_PORN: {
+		case actionTypes.CLEAR_PAWN: {
 			return {
 				...state,
-				porn: action.payload,
+				pawn: action.payload,
 			};
 		}
-		case actionTypes.NEW_MOVE_CLICK_PORN: {
+		case actionTypes.NEW_MOVE_CLICK_PAWN: {
 			return {
 				...state,
-				porn: action.payload.porn,
+				pawn: action.payload.porn,
 			};
 		}
 		case actionTypes.OPEN_PROMOTION_BOX: {
