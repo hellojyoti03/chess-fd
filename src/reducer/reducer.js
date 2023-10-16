@@ -33,7 +33,7 @@ let reducer = (state, action) => {
 		case actionTypes.NEW_MOVE_CLICK_PAWN: {
 			return {
 				...state,
-				pawn: action.payload.porn,
+				pawn: action.payload.pawn,
 			};
 		}
 		case actionTypes.OPEN_PROMOTION_BOX: {
