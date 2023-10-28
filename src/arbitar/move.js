@@ -15,7 +15,6 @@ let isPawnMove = ({ position, piece, rank, file, x, y }) => {
 let isNotPawnMove = ({ position, piece, rank, file, x, y }) => {
 	const newPosition = copyPosition(position);
 
-	console.log(piece, "piece");
 	const isKing = piece.endsWith("k");
 	if (isKing && Math.abs(y - file) > 1) {
 		const isWhite = piece.startsWith("w");

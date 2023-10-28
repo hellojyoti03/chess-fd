@@ -5,6 +5,7 @@ import { arbitar } from "./arbitar";
  */
 let getRookMoves = ({ position, rank, file, piece }) => {
 	let move = [];
+
 	let us = piece[0];
 	let enemy = us === "w" ? "b" : "w";
 
@@ -45,7 +46,7 @@ let getRookMoves = ({ position, rank, file, piece }) => {
 	return move;
 };
 /**
- * knight move rule
+ * knight move rule fixed with opponet black and white
  */
 let getKnightMoves = ({ position, rank, file }) => {
 	const moves = [];
@@ -67,6 +68,7 @@ let getKnightMoves = ({ position, rank, file }) => {
 			moves.push([rank + c[0], file + c[1]]);
 		}
 	});
+
 	return moves;
 };
 
@@ -101,6 +103,7 @@ let getBishopMoves = ({ position, piece, rank, file }) => {
 			moves.push([x, y]);
 		}
 	});
+
 	return moves;
 };
 /**
@@ -116,7 +119,7 @@ let getQueenMoves = ({ position, piece, rank, file }) => {
 };
 
 /**
- * king move rule
+ * king move rule with opponet black and white fixed
  */
 let getKingMoves = ({ position, piece, rank, file }) => {
 	let moves = [];
@@ -144,8 +147,9 @@ let getKingMoves = ({ position, piece, rank, file }) => {
 /**
  * pawn move rule
  */
-let getPawnMoves = ({ position, piece, rank, file }) => {
+let getPawnMoves = ({ position, piece, rank, file, opponent }) => {
 	const moves = [];
+
 	const dir = piece === "wp" ? 1 : -1;
 
 	// Move two tiles on first move
@@ -208,11 +212,12 @@ let getPawnCapture = ({ position, prevPosition, piece, rank, file }) => {
 			});
 		}
 	}
+
 	return moves;
 };
 
 /**
- * validate catling dir
+ * validate catling move
  */
 let getCastlingMove = ({ position, castelDirection, piece, rank, file }) => {
 	const move = [];
@@ -354,6 +359,10 @@ let getCastlingMove = ({ position, castelDirection, piece, rank, file }) => {
 	}
 	return move;
 };
+
+/**
+ * validate catling dir
+ */
 
 let getCastlingDir = ({ castelDirection, piece, rank, file }) => {
 	file = Number(file);

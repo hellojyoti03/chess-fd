@@ -17,4 +17,5 @@ function Provider(props) {
 export function useAppContext() {
 	return useContext(AppContext);
 }
+
 export default Provider;

@@ -42,7 +42,13 @@ let arbitar = {
 		if (piece.endsWith("p")) {
 			moves = [
 				...moves,
-				...getPawnCapture({ position, prevPosition, piece, rank, file }),
+				...getPawnCapture({
+					position,
+					prevPosition,
+					piece,
+					rank,
+					file,
+				}),
 			];
 		}
 		if (piece.endsWith("k")) {
@@ -71,7 +77,7 @@ let arbitar = {
 		return notInCheckMoves;
 	},
 
-	// check is pawn or
+	// check is pawn or not valid move
 	checkAmove: function ({ position, piece, rank, file, x, y }) {
 		const isPawn = piece.endsWith("p");
 		if (isPawn) {
@@ -82,7 +88,6 @@ let arbitar = {
 	},
 
 	// check player check or not
-
 	isPlayerChecked: function ({ positionAfterMove, position, player }) {
 		const enemy = player.startsWith("w") ? "b" : "w";
 		const kingPos = getKingPosition(positionAfterMove, player);
@@ -111,6 +116,8 @@ let arbitar = {
 		else return false;
 	},
 
+	// check is any stalemate or not
+
 	isStalemate: function (position, player, castleDirection) {
 		const isInCheck = this.isPlayerChecked({
 			positionAfterMove: position,
@@ -135,6 +142,8 @@ let arbitar = {
 
 		return !isInCheck && moves.length === 0;
 	},
+
+	// check for insufficient mating material
 	insufficientMaterial: function (position) {
 		const pieces = position.reduce(
 			(acc, rank) => (acc = [...acc, ...rank.filter((spot) => spot)]),
@@ -166,6 +175,8 @@ let arbitar = {
 
 		return false;
 	},
+
+	// checkmate
 	isCheckMate: function (position, player, castleDirection) {
 		const isInCheck = this.isPlayerChecked({
 			positionAfterMove: position,
@@ -188,6 +199,7 @@ let arbitar = {
 			[]
 		);
 
+		console.log(isInCheck && moves.length === 0);
 		return isInCheck && moves.length === 0;
 	},
 };

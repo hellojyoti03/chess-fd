@@ -1,33 +1,27 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import Rank from "./bitter/rank";
 import File from "./bitter/file";
 import Pieces from "../pieces/pieces";
-import CandidateMove from "../candidate/CandidateMove";
+
 import { useAppContext } from "../../context/Provider";
 
 import Pupup from "../../component/promotion/popupbox";
 import { arbitar } from "../../arbitar/arbitar";
 import { getKingPosition } from "../../arbitar/getMoves";
+
 function Board() {
 	const { appState } = useAppContext();
 
+	const currentPosition = appState.position[appState.position.length - 1];
 	const ranks = Array(8)
 		.fill()
 		.map((x, i) => 8 - i);
 	const files = Array(8)
 		.fill()
 		.map((x, i) => i + 1);
-	const [board, setBoard] = useState({ ranks: ranks, files: files });
-
-	const currentPosition = appState.position[appState.position.length - 1];
-
-	console.log(currentPosition, "current position");
 	/**
-	 * check every time king check or not
-	 *
-	 *
+	 * check every time king check or not by self invoking function
 	 */
-
 	const isChecked = (() => {
 		const isChecked = arbitar.isPlayerChecked({
 			positionAfterMove: currentPosition,
@@ -59,32 +53,29 @@ function Board() {
 		return c;
 	};
 
-	/**
-	 * rotate the board
-	 */
-
-	useEffect(() => {});
-	/**
-	 * rank and file 2d array
-	 */
-
 	return (
-		<div className='container'>
-			<CandidateMove />
-			<div className='boards'>
-				<Rank rank={ranks} />
-				<div className='tiles'>
-					{currentPosition.map((r, rank) =>
-						r.map((f, file) => (
-							<div key={file + "" + rank} className={`${getClassName(7 - rank, file)}`}></div>
-						))
-					)}
-				</div>
-				<Pupup />
-				<Pieces />
-				<File file={files} />
+		<>
+			<Rank rank={appState.opponent === "w" ? ranks.reverse() : ranks} />
+			<div
+				className="tiles"
+				style={{
+					transform:
+						appState.opponent === "w" ? `rotate(${180}deg)` : `rotate(${0}deg)`,
+				}}>
+				{currentPosition.map((r, rank) =>
+					r.map((f, file) => (
+						<div
+							key={file + "" + rank}
+							className={`${getClassName(7 - rank, file)}`}>
+							{/* {`${7 - rank}-${file}`} */}
+						</div>
+					))
+				)}
 			</div>
-		</div>
+			<Pupup />
+			<Pieces />
+			<File file={appState.opponent === "w" ? files.reverse() : files} />
+		</>
 	);
 }
 

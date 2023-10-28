@@ -1,9 +1,13 @@
-import React, { useState, useRef } from "react";
+import React from "react";
 import { useAppContext } from "../../context/Provider";
 
 import { arbitar } from "../../arbitar/arbitar";
 
-import { makeCandidateMoves, makeNewClickMove } from "../../reducer/move";
+import {
+	makeCandidateMoves,
+	setPicesSqoureInfo,
+	clearPicesSqoureInfo,
+} from "../../reducer/move";
 function piece({ rank, file, piece }) {
 	const { appState, dispatch } = useAppContext();
 
@@ -12,6 +16,26 @@ function piece({ rank, file, piece }) {
 	/**
 	 * move function
 	 */
+
+	const onMove = () => {
+		if (appState.opponent !== piece[0] && appState.turn === piece[0]) {
+			dispatch(clearPicesSqoureInfo());
+			const candicateMove = arbitar.getValidMoves({
+				position: currentPosition,
+				prevPosition: appState.position[appState.position.length - 2],
+				castelDirection: appState.castlingdir[appState.turn],
+				rank,
+				file,
+				piece,
+				opponent: appState.opponent,
+			});
+
+			dispatch(
+				setPicesSqoureInfo({ pieces_square_info: `${piece},${rank},${file}` })
+			);
+			dispatch(makeCandidateMoves({ candicateMove }));
+		}
+	};
 
 	/**
 	 *  darg event handel
@@ -24,21 +48,10 @@ function piece({ rank, file, piece }) {
 		}, 0);
 
 		// take my turn ...
-		if (appState.turn === piece[0]) {
-			const candicateMove = arbitar.getValidMoves({
-				position: currentPosition,
-				prevPosition: appState.position[appState.position.length - 2],
-				castelDirection: appState.castlingdir[appState.turn],
-				rank,
-				file,
-				piece,
-			});
-
-			dispatch(makeCandidateMoves({ candicateMove }));
-		}
+		onMove();
 	};
 
-	const handelDargEnd = (e) => {
+	const handelDragEnd = (e) => {
 		e.target.style.display = "block";
 	};
 
@@ -46,29 +59,15 @@ function piece({ rank, file, piece }) {
 	 * click event handel
 	 */
 	const handelClick = (e) => {
-		// check my turn
-		if (appState.turn === piece[0]) {
-			const candicateMove = arbitar.getValidMoves({
-				position: currentPosition,
-				prevPosition: appState.position[appState.position.length - 2],
-				castelDirection: appState.castlingdir[appState.turn],
-				rank,
-				file,
-				piece,
-			});
-
-			dispatch(makeNewClickMove({ pawn: `${piece},${rank},${file}` }));
-			dispatch(makeCandidateMoves({ candicateMove }));
-		}
+		onMove();
 	};
 
-	//! remove current div class toogle
 	return (
 		<div
-			className={`piece ${piece} p-${file}${rank}`}
+			className={`piece ${piece} p-${appState.opponent}${file}${rank}`}
 			draggable={true}
 			onDragStart={handelDragStart}
-			onDragEnd={handelDargEnd}
+			onDragEnd={handelDragEnd}
 			onClick={handelClick}></div>
 	);
 }

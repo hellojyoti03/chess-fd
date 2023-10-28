@@ -19,7 +19,6 @@ function popupbox() {
 		appState.status === gameStatus.stalemet ||
 		appState.status === gameStatus.insufficiant
 	) {
-		console.log("call dedd posoososo");
 		return (
 			<div className='popup'>
 				<Satalement />

@@ -4,7 +4,12 @@ import {
 	makeNewMove,
 	clearCandidates,
 	closePromotionBox,
+	clearPromotionSqourInfo,
+	dectactCheckmate,
+	dectactInSufficiantMatarial,
+	dectactStalemet,
 } from "../../reducer/move";
+import { arbitar } from "../../arbitar/arbitar";
 import { copyPosition } from "../../helper/helper";
 function promot() {
 	const options = ["q", "r", "b", "n"];
@@ -12,45 +17,79 @@ function promot() {
 	const { appState, dispatch } = useAppContext();
 
 	// console.log(appState, "app state promotion box");
-	if (!Object.keys(appState.promotion).length) {
+	if (!Object.keys(appState.promotion_square_info).length) {
 		return null;
 	}
-	const color = appState.promotion.x === 7 ? "w" : "b";
+
+	const color = appState.promotion_square_info.x === 7 ? "w" : "b";
 	const getPromotionBoxPosition = () => {
 		let style = {
 			zIndex: 2,
 		};
 
-		if (appState.promotion.x === 7) {
+		if (appState.promotion_square_info.x === 7) {
 			style.top = "2%";
 		} else {
 			style.top = "81.5%";
 		}
 
-		if (appState.promotion.y <= 1) {
+		if (appState.promotion_square_info.y <= 1) {
 			style.left = "0%";
-		} else if (appState.promotion.y >= 5) {
+		} else if (appState.promotion_square_info.y >= 5) {
 			style.right = "0%";
 		} else {
-			style.left = `${12.5 * appState.promotion.y - 20}%`;
+			style.left = `${12.5 * appState.promotion_square_info.y - 20}%`;
 		}
 
 		return style;
 	};
 
 	const handelClick = (option) => {
-		console.log(option);
-
+		dispatch(closePromotionBox());
+		const opponet = appState.promotion_square_info.piece.startsWith("w")
+			? "b"
+			: "w";
+		const castelDirection =
+			appState.castlingdir[
+				`${appState.promotion_square_info.piece.startsWith("w") ? "b" : "w"}`
+			];
 		const newPosition = copyPosition(
 			appState.position[appState.position.length - 1]
 		);
-		newPosition[appState.promotion.rank][appState.promotion.file] = "";
-		newPosition[appState.promotion.x][appState.promotion.y] = color + option;
+		newPosition[appState.promotion_square_info.rank][
+			appState.promotion_square_info.file
+		] = "";
+		newPosition[appState.promotion_square_info.x][
+			appState.promotion_square_info.y
+		] = color + option;
 
-		console.log("new poslition happen quuenn ", newPosition);
-		dispatch(closePromotionBox());
+		/**
+		 * new move notation when promot
+		 */
+		const newMove = getNewMoveNotation({
+			piece: color + option,
+			rank: appState.promotion_square_info.rank,
+			file: appState.promotion_square_info.file,
+			x: appState.promotion_square_info.x,
+			y: appState.promotion_square_info.y,
+			position: currentPosition,
+		});
+		dispatch(
+			makeNewMove({
+				newPosition,
+				newMove,
+			})
+		);
+
 		dispatch(clearCandidates());
-		dispatch(makeNewMove({ newPosition }));
+		if (arbitar.insufficientMaterial(newPosition)) {
+			dispatch(dectactInSufficiantMatarial());
+		} else if (arbitar.isStalemate(newPosition, opponet, castelDirection)) {
+			dispatch(dectactStalemet());
+		} else if (arbitar.isCheckMate(newPosition, opponet, castelDirection)) {
+			dispatch(dectactCheckmate(appState.promotion_square_info.piece[0]));
+		}
+		dispatch(clearPromotionSqourInfo());
 	};
 	return (
 		<div

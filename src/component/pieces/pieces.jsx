@@ -1,18 +1,18 @@
 import React, { useRef } from "react";
 import Piece from "./piece";
 
-import { copyPosition } from "../../helper/helper";
 import { useAppContext } from "../../context/Provider";
-
+import { getNewMoveNotation } from "../../helper/helper";
 import {
 	makeNewMove,
 	clearCandidates,
-	clearPawn,
+	clearPicesSqoureInfo,
 	openPromotionBox,
 	updateCastlingMove,
 	dectactStalemet,
 	dectactInSufficiantMatarial,
 	dectactCheckmate,
+	saveKillPices,
 } from "../../reducer/move";
 import { arbitar } from "../../arbitar/arbitar";
 import { getCastlingDir } from "../../arbitar/getMoves";
@@ -28,8 +28,14 @@ function pices() {
 	const calculateCoords = (e) => {
 		const { top, left, width } = picesRef.current.getBoundingClientRect();
 		const size = width / 8;
-		const y = Math.floor((e.clientX - left) / size);
-		const x = 7 - Math.floor((e.clientY - top) / size);
+		const y =
+			appState.opponent === "b"
+				? Math.floor((e.clientX - left) / size)
+				: 7 - Math.floor((e.clientX - left) / size);
+		const x =
+			appState.opponent === "b"
+				? 7 - Math.floor((e.clientY - top) / size)
+				: Math.floor((e.clientY - top) / size);
 
 		return { x, y };
 	};
@@ -38,8 +44,10 @@ function pices() {
 	 * open promotion box
 	 */
 
-	const handelOpenPromotionBox = ({ rank, file, x, y }) => {
-		dispatch(openPromotionBox({ rank: Number(rank), file: Number(file), x, y }));
+	const handelOpenPromotionBox = ({ rank, file, x, y, piece }) => {
+		dispatch(
+			openPromotionBox({ rank: Number(rank), file: Number(file), x, y, piece })
+		);
 	};
 
 	/**
@@ -57,47 +65,94 @@ function pices() {
 			dispatch(updateCastlingMove(dir));
 		}
 	};
+
+	/**
+	 * onDrop
+	 */
+
+	const onDrop = (e) => {
+		try {
+			if (appState.pieces_square_info) {
+				const { x, y } = calculateCoords(e);
+
+				const [piece, rank, file] = appState.pieces_square_info.split(",");
+
+				if (appState.candidateMove.find((m) => m[0] === x && m[1] === y)) {
+					// Em pasant move when current poition empty
+					const opponet = piece.startsWith("w") ? "b" : "w";
+					const castelDirection =
+						appState.castlingdir[`${piece.startsWith("w") ? "b" : "w"}`];
+
+					if (
+						(piece === "wp" && x === 7 && appState.opponent === "b") ||
+						(piece === "bp" && x === 0 && appState.opponent === "w")
+					) {
+						handelOpenPromotionBox({ rank, file, x, y });
+						return;
+					}
+
+					if (piece.endsWith("k") || piece.endsWith("r")) {
+						updateCastlingDir({ piece, rank, file });
+					}
+					const newPosition = arbitar.checkAmove({
+						position: currentPosition,
+						x,
+						y,
+						rank,
+						file,
+						piece,
+					});
+
+					const newMove = getNewMoveNotation({
+						piece,
+						rank,
+						file,
+						x,
+						y,
+						position: currentPosition,
+					});
+
+					if (newMove.includes("x")) {
+						dispatch(
+							saveKillPices({
+								prevPosition: appState.position[appState.position.length - 1],
+								x,
+								y,
+							})
+						);
+					}
+					dispatch(
+						makeNewMove({
+							newPosition,
+							newMove,
+						})
+					);
+
+					if (arbitar.insufficientMaterial(newPosition)) {
+						dispatch(dectactInSufficiantMatarial());
+					} else if (
+						arbitar.isStalemate(newPosition, opponet, castelDirection)
+					) {
+						dispatch(dectactStalemet());
+					} else if (
+						arbitar.isCheckMate(newPosition, opponet, castelDirection)
+					) {
+						dispatch(dectactCheckmate(piece[0]));
+					}
+				}
+
+				dispatch(clearCandidates());
+				dispatch(clearPicesSqoureInfo());
+			}
+		} catch (e) {
+			console.log(e, "error Occored");
+		}
+	};
 	/**
 	 * drop event handel
 	 */
 	const handelDrop = (e) => {
-		const { x, y } = calculateCoords(e);
-
-		console.log(x, "x====>", y, "y===>");
-		const [piece, rank, file] = e.dataTransfer.getData("text").split(",");
-
-		if (appState.candidateMove.find((m) => m[0] === x && m[1] === y)) {
-			// Em pasant move when current poition empty
-			const opponet = piece.startsWith("w") ? "b" : "w";
-			const castelDirection =
-				appState.castlingdir[`${piece.startsWith("w") ? "b" : "w"}`];
-			if ((piece === "wp" && x === 7) || (piece === "bp" && x === 0)) {
-				handelOpenPromotionBox({ rank, file, x, y });
-				return;
-			}
-			if (piece.endsWith("k") || piece.endsWith("r")) {
-				updateCastlingDir({ piece, rank, file });
-			}
-			const newPosition = arbitar.checkAmove({
-				position: currentPosition,
-				x,
-				y,
-				rank,
-				file,
-				piece,
-			});
-
-			dispatch(makeNewMove({ newPosition }));
-			if (arbitar.insufficientMaterial(newPosition)) {
-				dispatch(dectactInSufficiantMatarial());
-			} else if (arbitar.isStalemate(newPosition, opponet, castelDirection)) {
-				dispatch(dectactStalemet());
-			} else if (arbitar.isCheckMate(newPosition, opponet, castelDirection)) {
-				dispatch(dectactCheckmate(piece[0]));
-			}
-		}
-		dispatch(clearCandidates());
-		dispatch(clearPawn());
+		onDrop(e);
 	};
 
 	/**
@@ -111,75 +166,21 @@ function pices() {
 	 * drop click event handel
 	 */
 	const handelDropClick = (e) => {
-		if (appState.pawn) {
-			const { x, y } = calculateCoords(e);
-
-			console.log(x, "x====>", y, "y===>");
-			const [piece, rank, file] = appState.pawn.split(",");
-
-			if (appState.candidateMove.find((m) => m[0] === x && m[1] === y)) {
-				// Em pasant move when current poition empty
-
-				const opponet = piece.startsWith("w") ? "b" : "w";
-				const castelDirection =
-					appState.castlingdir[`${piece.startsWith("w") ? "b" : "w"}`];
-				if ((piece === "wp" && x === 7) || (piece === "bp" && x === 0)) {
-					handelOpenPromotionBox({ rank, file, x, y });
-					return;
-				}
-
-				if (piece.endsWith("k") || piece.endsWith("r")) {
-					updateCastlingDir({ piece, rank, file });
-				}
-				const newPosition = arbitar.checkAmove({
-					position: currentPosition,
-					x,
-					y,
-					rank,
-					file,
-					piece,
-				});
-
-				dispatch(makeNewMove({ newPosition }));
-
-				if (arbitar.insufficientMaterial(newPosition)) {
-					dispatch(dectactInSufficiantMatarial());
-				} else if (arbitar.isStalemate(newPosition, opponet, castelDirection)) {
-					dispatch(dectactStalemet());
-				} else if (arbitar.isCheckMate(newPosition, opponet, castelDirection)) {
-					dispatch(dectactCheckmate(piece[0]));
-				}
-			}
-			dispatch(clearCandidates());
-			dispatch(clearPawn());
-		}
+		onDrop(e);
 	};
-	console.log(
-		currentPosition.map((row) => row.reverse()).reverse(),
-		currentPosition[0][0],
-		"current position reverse "
-	);
 
 	return (
 		<>
 			<div
-				className='pieces'
+				className="pieces"
 				ref={picesRef}
 				onClick={handelDropClick}
 				onDrop={handelDrop}
-				onDragOver={handeldargOver}>
-				{/* {currentPosition.map((r, rank) =>
-					r.map((f, file) =>
-						currentPosition[rank][file] ? (
-							<Piece
-								key={rank + "-" + file}
-								rank={rank}
-								file={file}
-								piece={currentPosition[rank][file]}
-							/>
-						) : null
-					)
-				)} */}
+				onDragOver={handeldargOver}
+				style={{
+					transform:
+						appState.opponent === "w" ? `rotate(${180}deg)` : `rotate(${0}deg)`,
+				}}>
 				{currentPosition.map((r, rank) =>
 					r.map((f, file) =>
 						currentPosition[rank][file] ? (

@@ -1,11 +1,51 @@
+import { initArr } from "../reducer/constant";
+
+// function convertChessboard(inputArray) {
+// 	const chessboard = [];
+// 	const pieceTypes = ["r", "n", "b", "q", "k", "b", "n", "r"];
+
+// 	for (let i = 0; i < inputArray.length; i++) {
+// 		const row = inputArray[i];
+// 		const chessboardRow = [];
+
+// 		for (let j = 0; j < row.length; j++) {
+// 			const pieceCode = row[j];
+// 			if (pieceCode !== "") {
+// 				const color = i < 4 ? "w" : "b";
+// 				const pieceType = pieceTypes[j];
+// 				const square = [i, j];
+// 				const chessPiece = {
+// 					square: square,
+// 					type: pieceType,
+// 					color: color,
+// 				};
+// 				chessboardRow.push(chessPiece);
+// 			} else {
+// 				const square = [i, j];
+// 				const chessPiece = {
+// 					square: square,
+// 					type: "",
+// 					color: "",
+// 				};
+// 				chessboardRow.push(chessPiece);
+// 			}
+// 		}
+
+// 		chessboard.push(chessboardRow);
+// 	}
+
+// 	return chessboard;
+// }
+
 let createPosition = () => {
 	const position = new Array(8).fill("").map((x) => new Array(8).fill(""));
 
+	console.log(position, "rev");
 	for (let i = 0; i < 8; i++) {
 		position[6][i] = "bp";
 		position[1][i] = "wp";
 	}
-
+	// if white is first player
 	position[0][0] = "wr";
 	position[0][1] = "wn";
 	position[0][2] = "wb";
@@ -23,29 +63,6 @@ let createPosition = () => {
 	position[7][5] = "bb";
 	position[7][6] = "bn";
 	position[7][7] = "br";
-
-	// for black assigned
-
-	// in sufficiant mating material
-	// position[0][4] = "wk";
-	// position[7][4] = "bk";
-	// position[1][6] = "bp";
-
-	// checkmate wins
-
-	// position[7][7] = "bk";
-	// position[7][5] = "wk";
-	// position[0][6] = "wr";
-
-	// checkmate move
-	// position[7][0] = "bk";
-	// position[7][5] = "wk";
-	// position[0][6] = "wr";
-
-	// satelmet sinario
-	// position[7][0] = "wk";
-	// position[1][4] = "wq";
-	// position[0][7] = "bk";
 
 	return position;
 };
@@ -83,10 +100,43 @@ let findPieceCoords = (position, type) => {
 	return results;
 };
 
+let getNewMoveNotation = ({
+	piece,
+	rank,
+	file,
+	x,
+	y,
+	position,
+	promotesTo,
+}) => {
+	let note = "";
+	rank = Number(rank);
+	file = Number(file);
+	if (piece[1] === "k" && Math.abs(file - y) === 2) {
+		if (file < y) return "O-O";
+		else return "O-O-O";
+	}
+
+	if (piece[1] !== "p") {
+		note += piece[1].toUpperCase();
+		if (position[x][y]) {
+			note += "x";
+		}
+	} else if (rank !== x && file !== y) {
+		note += AsciiToChar(file + 1) + "x";
+	}
+
+	note += AsciiToChar(y + 1) + (x + 1);
+
+	if (promotesTo) note += "=" + promotesTo.toUpperCase();
+	return note;
+};
+
 export {
 	createPosition,
 	copyPosition,
 	AsciiToChar,
 	areSameColorTiles,
 	findPieceCoords,
+	getNewMoveNotation,
 };
